@@ -9,26 +9,28 @@ router.get("/test", (req, res) => {
   res.status(200).json({ success: true, data: { id: 1 } });
 });
 //Routes Full CRUD
-router.get("/api/v1/bootcamps", (req, res) => {
+router.get("/", (req, res) => {
   res.status(200).json({ success: true, mgs: "Show all bootcamps" });
 });
 
-router.get("/api/v1/bootcamps/:id", (req, res) => {
+router.get("/:id", (req, res) => {
   res.status(200).json({ success: true, mgs: `Get bootcamp ${req.params.id}` });
 });
 
-router.post("/api/v1/bootcamps", (req, res) => {
+router.post("/", (req, res) => {
   res.status(200).json({ success: true, mgs: "Create new bootcamp" });
 });
 
-router.put("/api/v1/bootcamps/:id", (req, res) => {
+router.put("/:id", (req, res) => {
   res
     .status(200)
     .json({ success: true, mgs: `Update bootcamp ${req.params.id}` });
 });
 
-router.delete("/api/v1/bootcamps/:id", (req, res) => {
+router.delete("/:id", (req, res) => {
   res
     .status(200)
     .json({ success: true, mgs: `Delete Bootcamp ${req.params.id}` });
 });
+
+module.exports = router;
