@@ -15,6 +15,17 @@ router.get("/test", (req, res) => {
   //   res.status(400).json({ success: false });
   res.status(200).json({ success: true, data: { id: 1 } });
 });
+
 //Routes Full CRUD
+router
+  .route("/")
+  .get(getBootcamps)
+  .post(createBootcamp);
+
+router
+  .route("/:id")
+  .get(getBootcamp)
+  .put(updateBootcamp)
+  .delete(deleteBootcamp);
 
 module.exports = router;
