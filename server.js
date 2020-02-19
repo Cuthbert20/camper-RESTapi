@@ -1,7 +1,9 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const app = express();
-
+const logger = require("./middleware/logger");
+//Morgan will replace our logger
+const morgan = require("morgan");
 //?Route Files
 const bootcamps = require("./routes/bootcamps");
 
@@ -9,13 +11,11 @@ const bootcamps = require("./routes/bootcamps");
 dotenv.config({ path: "./config/config.env" });
 
 //Middleware
-
-const logger = (req, res, next) => {
-  const { method, originalUrl, protocol } = req;
-  console.log(`${method} ${protocol}://${req.get("host")}${originalUrl}`);
-  next();
-};
-app.use(logger);
+// app.use(logger);
+//Dev loggin middlware, should only run in development enviroment
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
 //Mount routes, middleware
 app.use("/api/v1/bootcamps", bootcamps);
 
