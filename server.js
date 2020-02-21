@@ -4,11 +4,16 @@ const app = express();
 const logger = require("./middleware/logger");
 //Morgan will replace our logger
 const morgan = require("morgan");
-//?Route Files
-const bootcamps = require("./routes/bootcamps");
+const connectDB = require("./config/db");
 
 //Load Enviroment Variables from our env file config.env
 dotenv.config({ path: "./config/config.env" });
+
+//Connect to database
+connectDB();
+
+//?Route Files
+const bootcamps = require("./routes/bootcamps");
 
 //Middleware
 // app.use(logger);
