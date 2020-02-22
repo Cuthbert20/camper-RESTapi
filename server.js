@@ -1,6 +1,5 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const app = express();
 const logger = require("./middleware/logger");
 //Morgan will replace our logger
 const morgan = require("morgan");
@@ -15,6 +14,11 @@ connectDB();
 
 //?Route Files
 const bootcamps = require("./routes/bootcamps");
+
+const app = express();
+
+//Body parser
+app.use(express.json());
 
 //Middleware
 // app.use(logger);
