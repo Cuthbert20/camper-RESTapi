@@ -3,8 +3,15 @@ const Bootcamp = require("../models/Bootcamp");
 //@desc Get all bootcamps
 //@route GET /api/v1/bootcamps
 //@access Public
-exports.getBootcamps = (req, res, next) => {
-  res.status(200).json({ success: true, mgs: "Show all bootcamps" });
+exports.getBootcamps = async (req, res, next) => {
+  try {
+    const bootcamps = await Bootcamp.find(); //any method after Bootcamp is a built in mongoose method.
+
+    res.status(200).json({ success: true, data: bootcamps });
+  } catch (err) {
+    res.status(400).json({ success: false, mgs: err });
+  }
+  //   res.status(200).json({ success: true, mgs: "Show all bootcamps" });
 };
 
 //@desc Get single bootcamp
@@ -19,7 +26,7 @@ exports.getBootcamp = (req, res, next) => {
 //@access Private
 exports.createBootcamp = async (req, res, next) => {
   try {
-    const bootcamp = await Bootcamp.create(req.body);
+    const bootcamp = await Bootcamp.create(req.body); //any method after Bootcamp is a built in mongoose method.
     res.status(201).json({ success: true, data: bootcamp });
   } catch (err) {
     res.status(400).json({ success: false });
