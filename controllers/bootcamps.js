@@ -49,16 +49,31 @@ exports.createBootcamp = async (req, res, next) => {
 //@desc Get all bootcamps
 //@route PUT /api/v1/bootcamps/:id
 //@access Private
-exports.updateBootcamp = (req, res, next) => {
-  res
-    .status(200)
-    .json({ success: true, mgs: `Update bootcamp ${req.params.id}` });
+exports.updateBootcamp = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const bootcamp = await Bootcamp.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true
+    }); //any method after Bootcamp is a built in mongoose method.
+    if (!bootcamp) {
+      return res.status(400).json({ success: false });
+    }
+    res.status(200).json({ success: true, data: bootcamp });
+  } catch (err) {
+    res.status(400).send({ success: false, msg: err });
+  }
+  //   res
+  //     .status(200)
+  //     .json({ success: true, mgs: `Update bootcamp ${req.params.id}` });
 };
 
 //@desc Delete a bootcamp
 //@route DELETE /api/v1/bootcamps/:id
 //@access Private
-exports.deleteBootcamp = (req, res, next) => {
+exports.deleteBootcamp = async (req, res, next) => {
+  try {
+  } catch (err) {}
   res
     .status(200)
     .json({ success: true, mgs: `Delete Bootcamp ${req.params.id}` });
