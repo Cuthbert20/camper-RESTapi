@@ -7,7 +7,9 @@ exports.getBootcamps = async (req, res, next) => {
   try {
     const bootcamps = await Bootcamp.find(); //any method after Bootcamp is a built in mongoose method.
 
-    res.status(200).json({ success: true, data: bootcamps });
+    res
+      .status(200)
+      .json({ success: true, count: bootcamps.length, data: bootcamps });
   } catch (err) {
     res.status(400).json({ success: false, mgs: err });
   }
@@ -28,7 +30,8 @@ exports.getBootcamp = async (req, res, next) => {
 
     res.status(200).json({ success: true, data: bootcamp });
   } catch (err) {
-    res.status(400).json({ success: false, mgs: err });
+    // res.status(400).json({ success: false, mgs: err });
+    next(err);
   }
 
   //   res.status(200).json({ success: true, mgs: `Get bootcamp ${req.params.id}` });
@@ -51,6 +54,7 @@ exports.createBootcamp = async (req, res, next) => {
 //@access Private
 exports.updateBootcamp = async (req, res, next) => {
   const { id } = req.params;
+  console.log(req.body); //we can access the request body because of the body parser ie. app.use(express.json()) on the server.
   try {
     const bootcamp = await Bootcamp.findByIdAndUpdate(id, req.body, {
       new: true,
@@ -73,8 +77,20 @@ exports.updateBootcamp = async (req, res, next) => {
 //@access Private
 exports.deleteBootcamp = async (req, res, next) => {
   try {
-  } catch (err) {}
-  res
-    .status(200)
-    .json({ success: true, mgs: `Delete Bootcamp ${req.params.id}` });
+    const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
+    if (!bootcamp) {
+      return res.status(400).json({
+        success: false,
+        msg: `No bootcamp with the id of ${req.params.id}`
+      });
+    }
+    res
+      .status(200)
+      .json({ success: true, data: `${bootcamp.name} has been removed` });
+  } catch (err) {
+    res.status(400).json({ success: false, msg: err });
+  }
+  //   res
+  //     .status(200)
+  //     .json({ success: true, mgs: `Delete Bootcamp ${req.params.id}` });
 };
