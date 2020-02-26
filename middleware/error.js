@@ -5,12 +5,24 @@ const errorHandler = (err, req, res, next) => {
 
   error.message = err.message;
   //Log to console for dev
-  console.log(err.stack.red); //using color package to return console.log data in red.
+  console.log(err); //using color package to return console.log data in red.
 
   // Mongoose bad ObjectId
   if (err.name === "CastError") {
     const message = `Bootcamp not found with id of ${err.value}`;
     error = new ErrorResponse(message, 404);
+  }
+
+  //Mongoose duplicate key
+  if (err.code === 11000) {
+    const message = `Duplicate field value entered`;
+    error = new ErrorResponse(message, 400);
+  }
+
+  // Mongoose Validation error
+  if (err.name === "ValidationError") {
+    const message = Object.values(err.errors).map(val => val.message);
+    error = new ErrorResponse(message, 400);
   }
 
   res
