@@ -1,22 +1,20 @@
 const Bootcamp = require("../models/Bootcamp");
 //Importing class from utils folder
 const ErrorResponse = require("../utils/errorResponse");
+const asyncHandler = require("../middleware/async");
 
 //@desc Get all bootcamps
 //@route GET /api/v1/bootcamps
 //@access Public
-exports.getBootcamps = async (req, res, next) => {
-  try {
-    const bootcamps = await Bootcamp.find(); //any method after Bootcamp is a built in mongoose method.
+exports.getBootcamps = asyncHandler(async (req, res, next) => {
+  const bootcamps = await Bootcamp.find(); //any method after Bootcamp is a built in mongoose method.
+  //!Replaced try catch block with asyncHander see middleware folder
+  res
+    .status(200)
+    .json({ success: true, count: bootcamps.length, data: bootcamps });
 
-    res
-      .status(200)
-      .json({ success: true, count: bootcamps.length, data: bootcamps });
-  } catch (err) {
-    next(err);
-  }
   //   res.status(200).json({ success: true, mgs: "Show all bootcamps" });
-};
+});
 
 //@desc Get single bootcamp
 //@route GET /api/v1/bootcamps/:id
