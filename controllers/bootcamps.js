@@ -19,91 +19,75 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
 //@desc Get single bootcamp
 //@route GET /api/v1/bootcamps/:id
 //@access Public
-exports.getBootcamp = async (req, res, next) => {
-  try {
-    const bootcamp = await Bootcamp.findById(req.params.id); //any method after Bootcamp is a built in mongoose method.
+exports.getBootcamp = asyncHandler(async (req, res, next) => {
+  const bootcamp = await Bootcamp.findById(req.params.id); //any method after Bootcamp is a built in mongoose method.
 
-    if (!bootcamp) {
-      //we have to return because of multipule responses inside our try block.
-      return next(
-        new ErrorResponse(
-          `Bootcamp not found with the id of ${req.params.id}`,
-          404
-        )
-      );
-    }
-
-    res.status(200).json({ success: true, data: bootcamp });
-  } catch (err) {
-    // res.status(400).json({ success: false, mgs: err });
-    //! Handling error with error.js error handler
-    next(err);
+  if (!bootcamp) {
+    //we have to return because of multipule responses inside our try block.
+    return next(
+      new ErrorResponse(
+        `Bootcamp not found with the id of ${req.params.id}`,
+        404
+      )
+    );
   }
 
+  res.status(200).json({ success: true, data: bootcamp });
+
   //   res.status(200).json({ success: true, mgs: `Get bootcamp ${req.params.id}` });
-};
+});
 
 //@desc Create new bootcamp
 //@route POST /api/v1/bootcamps
 //@access Private
-exports.createBootcamp = async (req, res, next) => {
-  try {
-    const bootcamp = await Bootcamp.create(req.body); //any method after Bootcamp is a built in mongoose method.
-    res.status(201).json({ success: true, data: bootcamp });
-  } catch (err) {
-    next(err);
-  }
-};
+exports.createBootcamp = asyncHandler(async (req, res, next) => {
+  const bootcamp = await Bootcamp.create(req.body); //any method after Bootcamp is a built in mongoose method.
+  res.status(201).json({ success: true, data: bootcamp });
+});
 
 //@desc Get all bootcamps
 //@route PUT /api/v1/bootcamps/:id
 //@access Private
-exports.updateBootcamp = async (req, res, next) => {
+exports.updateBootcamp = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   console.log(req.body); //we can access the request body because of the body parser ie. app.use(express.json()) on the server.
-  try {
-    const bootcamp = await Bootcamp.findByIdAndUpdate(id, req.body, {
-      new: true,
-      runValidators: true
-    }); //any method after Bootcamp is a built in mongoose method.
-    if (!bootcamp) {
-      return next(
-        new ErrorResponse(
-          `Bootcamp not found with the id of ${req.params.id}`,
-          404
-        )
-      );
-    }
-    res.status(200).json({ success: true, data: bootcamp });
-  } catch (err) {
-    next(err);
+
+  const bootcamp = await Bootcamp.findByIdAndUpdate(id, req.body, {
+    new: true,
+    runValidators: true
+  }); //any method after Bootcamp is a built in mongoose method.
+  if (!bootcamp) {
+    return next(
+      new ErrorResponse(
+        `Bootcamp not found with the id of ${req.params.id}`,
+        404
+      )
+    );
   }
+  res.status(200).json({ success: true, data: bootcamp });
   //   res
   //     .status(200)
   //     .json({ success: true, mgs: `Update bootcamp ${req.params.id}` });
-};
+});
 
 //@desc Delete a bootcamp
 //@route DELETE /api/v1/bootcamps/:id
 //@access Private
-exports.deleteBootcamp = async (req, res, next) => {
-  try {
-    const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
-    if (!bootcamp) {
-      return next(
-        new ErrorResponse(
-          `Bootcamp not found with the id of ${req.params.id}`,
-          404
-        )
-      );
-    }
-    res
-      .status(200)
-      .json({ success: true, data: `${bootcamp.name} has been removed` });
-  } catch (err) {
-    next(err);
+exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
+  const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
+  if (!bootcamp) {
+    return next(
+      new ErrorResponse(
+        `Bootcamp not found with the id of ${req.params.id}`,
+        404
+      )
+    );
   }
+  res
+    .status(200)
+    .json({ success: true, data: `${bootcamp.name} has been removed` });
+
   //   res
   //     .status(200)
   //     .json({ success: true, mgs: `Delete Bootcamp ${req.params.id}` });
-};
+});
