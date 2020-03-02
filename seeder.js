@@ -34,3 +34,22 @@ const importData = async () => {
     console.error(err);
   }
 };
+
+// Delete data
+const deleteData = async () => {
+  try {
+    await Bootcamp.deleteMany();
+
+    console.log("Data Destroyed...".red.inverse);
+    process.exit();
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+//! in terminal you can run node seeder -i
+if (process.argv[2] === "-i") {
+  importData();
+} else if (process.argv[2] === "-d") {
+  deleteData();
+}
