@@ -125,7 +125,7 @@ BootcampSchema.pre("save", async function(next) {
     street: loc[0].streetName,
     city: loc[0].city,
     state: loc[0].stateCode,
-    zipCode: loc[0].zipcode,
+    zipcode: loc[0].zipcode,
     country: loc[0].countryCode
   };
 
