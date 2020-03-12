@@ -8,6 +8,13 @@ const geocoder = require("../utils/geocoder");
 //@route GET /api/v1/bootcamps
 //@access Public
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
+  //! console.log request queries that were passed into the url
+  console.log(req.query);
+  let query,
+    queryStr = JSON.stringify(req.query);
+  queryStr = queryStr.replace(/\b(gt|gte|lte|lt|in)\b/g, mathc => `$${match}`);
+
+  //!We are passing the req.query object to .find mongoDB method any queries passed into url .find with search and find bootcamps where thoose values are true.
   const bootcamps = await Bootcamp.find(); //any method after Bootcamp is a built in mongoose method.
   //!Replaced try catch block with asyncHander see middleware folder
   res
