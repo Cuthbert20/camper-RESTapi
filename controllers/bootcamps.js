@@ -10,12 +10,18 @@ const geocoder = require("../utils/geocoder");
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
   //! console.log request queries that were passed into the url
   console.log(req.query);
-  let query,
-    queryStr = JSON.stringify(req.query);
-  queryStr = queryStr.replace(/\b(gt|gte|lte|lt|in)\b/g, mathc => `$${match}`);
+  let query;
+  let queryStr = JSON.stringify(req.query);
+  //! making a copy of req.query call reqQuery and pull select out so we can just get back specific values
+  const reqQuery = { ...req.query };
+
+  queryStr = queryStr.replace(/\b(gt|gte|lte|lt|in)\b/g, match => `$${match}`);
+  // console.log(queryStr);
+
+  query = Bootcamp.find(JSON.parse(queryStr));
 
   //!We are passing the req.query object to .find mongoDB method any queries passed into url .find with search and find bootcamps where thoose values are true.
-  const bootcamps = await Bootcamp.find(); //any method after Bootcamp is a built in mongoose method.
+  const bootcamps = await query;
   //!Replaced try catch block with asyncHander see middleware folder
   res
     .status(200)
