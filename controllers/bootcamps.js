@@ -11,16 +11,29 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
   //! console.log request queries that were passed into the url
   console.log(req.query);
   let query;
-  let queryStr = JSON.stringify(req.query);
   //! making a copy of req.query call reqQuery and pull select out so we can just get back specific values
   const reqQuery = { ...req.query };
 
+  // Fields to exclude, that I don't want to be matched
+  const removeFields = ["select"];
+
+  // Loop over removeFields and delete them from reQuery
+  removeFields.forEach(param => delete reqQuery[param]);
+
+  console.log(reqQuery);
+
+  // Create a Query String
+  let queryStr = JSON.stringify(reqQuery);
+
+  // Create operators ($gt, $gte, ect)
   queryStr = queryStr.replace(/\b(gt|gte|lte|lt|in)\b/g, match => `$${match}`);
   // console.log(queryStr);
 
+  // Finding resource
   query = Bootcamp.find(JSON.parse(queryStr));
 
   //!We are passing the req.query object to .find mongoDB method any queries passed into url .find with search and find bootcamps where thoose values are true.
+  // Executing query
   const bootcamps = await query;
   //!Replaced try catch block with asyncHander see middleware folder
   res
