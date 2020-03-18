@@ -20,7 +20,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
   // Loop over removeFields and delete them from reQuery
   removeFields.forEach(param => delete reqQuery[param]);
 
-  console.log(reqQuery);
+  console.log("query includes select === {}", reqQuery);
 
   // Create a Query String
   let queryStr = JSON.stringify(reqQuery);
@@ -31,6 +31,15 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
 
   // Finding resource
   query = Bootcamp.find(JSON.parse(queryStr));
+
+  // SELECT FIELDS
+  if (req.query.select) {
+    const fields = req.query.select.split(",").join(" ");
+    // Creating array of fields if select is in request query ie /api/v1/bootcamps?select=name,description
+    // Using .split() method on req.query.select string. Then joining back into a string using .join() method
+    // console.log(fields);
+    query = query.select(fields);
+  }
 
   //!We are passing the req.query object to .find mongoDB method any queries passed into url .find with search and find bootcamps where thoose values are true.
   // Executing query
