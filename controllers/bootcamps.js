@@ -15,7 +15,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
   const reqQuery = { ...req.query };
 
   // Fields to exclude, that I don't want to be matched
-  const removeFields = ["select"];
+  const removeFields = ["select", "sort"];
 
   // Loop over removeFields and delete them from reQuery
   removeFields.forEach(param => delete reqQuery[param]);
@@ -39,6 +39,16 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
     // Using .split() method on req.query.select string. Then joining back into a string using .join() method
     // console.log(fields);
     query = query.select(fields);
+  }
+
+  // Sort, same as above for Fields
+  if (req.query.sort) {
+    // Turn into array at , then creating string with spaces where , were.
+    const sortBy = req.query.sort.split(",").join(" ");
+
+    query = query.sort(sortBy);
+  } else {
+    query = query.sort("-createdAt");
   }
 
   //!We are passing the req.query object to .find mongoDB method any queries passed into url .find with search and find bootcamps where thoose values are true.
