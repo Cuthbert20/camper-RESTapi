@@ -14,8 +14,8 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
   //! making a copy of req.query call reqQuery and pull select out so we can just get back specific values
   const reqQuery = { ...req.query };
 
-  // Fields to exclude, that I don't want to be matched
-  const removeFields = ["select", "sort"];
+  // Fields to exclude, that I don't want to be matched to fields in the database.
+  const removeFields = ["select", "sort", "page", "limit"];
 
   // Loop over removeFields and delete them from reQuery
   removeFields.forEach(param => delete reqQuery[param]);
@@ -41,7 +41,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
     query = query.select(fields);
   }
 
-  // Sort, same as above for Fields
+  // Sort, same as above for Fields but, instead of select using sort.
   if (req.query.sort) {
     // Turn into array at , then creating string with spaces where , were.
     const sortBy = req.query.sort.split(",").join(" ");
@@ -51,13 +51,42 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
     query = query.sort("-createdAt");
   }
 
+  // Pagination
+  const page = parseInt(req.query.page, 10) || 1; //comes in as a string we want it to be a number, also page one is default if no page query is passed through request.
+  const limit = parseInt(req.query.limit, 10) || 1; //set to 100 by default if no limit passed in as query with request.
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+  const total = await Bootcamp.countDocuments(); // Mongoose Meothod
+
+  query = query.skip(startIndex).limit(limit);
+
   //!We are passing the req.query object to .find mongoDB method any queries passed into url .find with search and find bootcamps where thoose values are true.
   // Executing query
   const bootcamps = await query;
+
+  // Pagination result
+  const pagination = {};
+  if (endIndex < total) {
+    pagination.next = {
+      page: page + 1,
+      limit
+    };
+  }
+
+  if (startIndex > 0) {
+    pagination.prev = {
+      page: page - 1,
+      limit
+    };
+  }
+
   //!Replaced try catch block with asyncHander see middleware folder
-  res
-    .status(200)
-    .json({ success: true, count: bootcamps.length, data: bootcamps });
+  res.status(200).json({
+    success: true,
+    count: bootcamps.length,
+    pagination, // variable same as key ie same as pagination: pagination
+    data: bootcamps
+  });
 
   //   res.status(200).json({ success: true, mgs: "Show all bootcamps" });
 });
