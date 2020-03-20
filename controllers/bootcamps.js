@@ -53,7 +53,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
 
   // Pagination
   const page = parseInt(req.query.page, 10) || 1; //comes in as a string we want it to be a number, also page one is default if no page query is passed through request.
-  const limit = parseInt(req.query.limit, 10) || 1; //set to 100 by default if no limit passed in as query with request.
+  const limit = parseInt(req.query.limit, 10) || 10; //set to 100 by default if no limit passed in as query with request.
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
   const total = await Bootcamp.countDocuments(); // Mongoose Meothod
