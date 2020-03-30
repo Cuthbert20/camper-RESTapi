@@ -7,7 +7,14 @@ const {
   deleteBootcamp,
   getBootcampsInRadius
 } = require("../controllers/bootcamps");
+
+// Include other resource routers such as courses router, reviews router, ect.
+const courseRouter = require("./courses");
+
 const router = express.Router();
+
+// Middleware to Re-route into other resource routers souch as courses or review router.
+router.use("/:bootcampId/courses", courseRouter);
 
 router.get("/test", (req, res) => {
   //   res.send(`<h1>${req.hello}</h1>`);
